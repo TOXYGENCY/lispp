@@ -1,3 +1,18 @@
-/* You can add global styles to this file, and also import other style files */
+/* Глобальные стили для всего сайта */
 @import "primeng/resources/primeng.css";
-@import "primeng/resources/themes/aura-light-teal/theme.css";
+@import "primeng/resources/themes/aura-light-blue/theme.css";
+@import "primeflex/primeflex.css";
+@font-face {
+    font-family: Inter var;
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/assets/fonts/InterVariable.woff2") format("woff2");
+}
+@font-face {
+    font-family: Inter var;
+    font-style: italic;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("/assets/fonts/InterVariable-Italic.woff2") format("woff2");
+}
