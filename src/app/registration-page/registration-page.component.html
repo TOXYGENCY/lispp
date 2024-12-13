@@ -1,17 +1,80 @@
-<div class="mt-8 max-w-29rem surface-card p-4 shadow-2 border-round w-full lg:w-6 mx-auto justify-center items-center">
+<form (ngSubmit)="Submit()"
+    class="mt-8 max-w-29rem surface-card p-4 shadow-2 border-round w-full lg:w-6 mx-auto justify-center items-center">
     <div class="text-center mb-5">
-        <img src="assets/icons/favicons/android-chrome-192x192.png" alt="Вход" height="50" class="mb-3">
-        <div class="text-900 text-3xl font-medium mb-3">Вход в информационную систему</div>
-        <span class="text-600 font-medium line-height-3">Нет аккаунта?</span>
-        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Зарегистрироваться.</a>
+        <img src="assets/icons/favicons/android-chrome-192x192.png" alt="#" height="50" class="mb-3">
+        <div class="text-900 text-3xl font-medium mb-3">{{ fullTitleRu }}.<br /> {{ isAuth ? "Вход" : "Регистрация" }}
+        </div>
+        <span class="text-600 font-medium line-height-3">{{ isAuth ? "Нет аккаунта" : "Есть аккаунт" }}?</span>
+        <a (click)="isAuth=!isAuth" class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">{{ isAuth ?
+            "Зарегистрироваться" : "Войти" }}.</a>
     </div>
 
     <div>
-        <label for="email1" class="block text-900 font-medium mb-2">Логин</label>
-        <input id="email1" type="text" placeholder="Логин" pInputText class="w-full mb-3">
+        <div *ngIf="!isAuth">
+            <label for="userType" class="block text-900 font-medium mb-2">Тип пользователя<span
+                    class="text-red-500 text-sm">*</span></label>
+            <!-- <form [(ngModel)]="userType" name="userType" class="card flex justify-center w-full mb-3" required>
+                <p-select formControlName="selectedCity" [options]="cities" optionLabel="name"
+                    placeholder="Выберите тип пользователя" class="w-full md:w-56" />
+                    
+            </form> -->
+            <select id="userType" [(ngModel)]="userType" name="userType" class="w-full mb-3" required>
+                <option value="" disabled selected>Выберите тип пользователя</option>
+                <option value="1">Ученик</option>
+                <option value="2">Преподаватель</option>
+                <option value="3">Админ</option>
+            </select>
+        </div>
 
-        <label for="password1" class="block text-900 font-medium mb-2">Пароль</label>
-        <input id="password1" type="password" placeholder="Пароль" pInputText class="w-full mb-3">
-        <button (click)="getAll()" pButton pRipple label="Вход" icon="pi pi-user" class="w-full"></button>
+        <label *ngIf="!isAuth" for="name" class="block text-900 font-medium mb-2">Имя<span
+                class="text-red-500 text-sm">*</span></label>
+        <input *ngIf="!isAuth" id="name" name="name" [(ngModel)]="name" (input)="onInputChange()" type="text"
+            placeholder="Имя" pInputText class="w-full mb-3" [required]="!isAuth">
+
+        <label for="email" class="block text-900 font-medium mb-2">E-mail<span
+                class="text-red-500 text-sm">*</span></label>
+        <input id="email" name="email" [(ngModel)]="email" (input)="onInputChange()" type="text"
+            placeholder="Электронная почта" pInputText class="w-full mb-3" required>
+
+        <label for="password" class="block text-900 font-medium mb-2">Пароль<span
+                class="text-red-500 text-sm">*</span></label>
+        <input id="password" name="password" [(ngModel)]="passwordString" (input)="onInputChange()" type="password"
+            placeholder="Пароль" pInputText class="w-full mb-3" required>
+
+        <label *ngIf="!isAuth" for="password2" class="block text-900 font-medium mb-2">Повторите пароль<span
+                class="text-red-500 text-sm">*</span></label>
+        <input *ngIf="!isAuth" id="password2" password2="password2" [(ngModel)]="password2" (input)="onInputChange()"
+            name="password2" type="password" placeholder="Повторите пароль" pInputText class="w-full mb-3"
+            [required]="!isAuth">
+
+        <div *ngIf="!isAuth">
+            <div *ngIf="userType === 'teacher'">
+                <label for="orgCode" class="block text-900 font-medium mb-2">Код организации<span
+                        class="text-red-500 text-sm">*</span></label>
+                <input id="orgCode" name="orgCode" [(ngModel)]="orgCode" type="text"
+                    placeholder="Введите код Вашей организации" pInputText class="w-full mb-3" required>
+            </div>
+
+            <div *ngIf="userType === 'admin'">
+                <label for="adminCode" class="block text-900 font-medium mb-2">Код администратора<span
+                        class="text-red-500 text-sm">*</span></label>
+                <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text"
+                    placeholder="Введите код администратора" pInputText class="w-full mb-3" required>
+            </div>
+
+            <div *ngIf="userType === 'student'">
+                <label for="grade" class="block text-900 font-medium mb-2">Класс<span
+                        class="text-red-500 text-sm">*</span></label>
+                <input id="grade" name="grade" [(ngModel)]="grade" type="text" placeholder="Введите класс" pInputText
+                    class="w-full mb-3" required>
+            </div>
+        </div>
+
+
+        <div *ngIf="showErrorHint" class="text-red-500 text-sm font-medium mb-3">{{ hintText }}</div>
+        <button type="submit" pButton pRipple class="w-full">
+            <span *ngIf="showLoading" class="pi pi-spin pi-spinner"></span>
+            <span class="pl-2 text-center">{{ showLoading ? "Отправляем..." : submitLabel }}</span>
+        </button>
     </div>
-</div>
+</form>

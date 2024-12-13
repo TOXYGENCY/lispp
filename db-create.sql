@@ -1,66 +1,105 @@
--- Database structure
--- Main entities: 
+-- Коды администраторов
+CREATE TABLE admin_codes (
+  id SERIAL PRIMARY KEY,
+  code VARCHAR(10) UNIQUE NOT NULL
+);
 
--- User - has 3 types of users and specific fields chosen by user type
--- Lesson
--- Test - tied to lesson
--- Test questions and answers, tied to test
+-- Организации (для проверки кодов)
+CREATE TABLE organizations (
+  id SERIAL PRIMARY KEY,
+  code VARCHAR(10) UNIQUE NOT NULL,
+  name VARCHAR NOT NULL
+);
 
+-- Пользователи
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
+  name VARCHAR NOT NULL,
   email VARCHAR UNIQUE NOT NULL,
   password VARCHAR NOT NULL,
   user_type INTEGER NOT NULL,
-  org_code VARCHAR(10),
-  admin_code VARCHAR(10),
+  organization_id INTEGER REFERENCES organizations(id),
+  admin_code_id INTEGER REFERENCES admin_codes(id),
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-
-CREATE TABLE lessons (
+-- Главы блоков
+CREATE TABLE chapters (
   id SERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  description TEXT,
+  title VARCHAR NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Блоки тем
+CREATE TABLE blocks (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Связь блоков и глав 
+CREATE TABLE chapter_blocks (
+  id SERIAL PRIMARY KEY,
+  chapter_id INTEGER NOT NULL REFERENCES chapters(id),
+  block_id INTEGER NOT NULL REFERENCES blocks(id)
+);
+
+-- Параграфы в блоках
+CREATE TABLE paragraphs (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR NOT NULL,
+  description VARCHAR,
+  block_id INTEGER NOT NULL REFERENCES blocks(id),
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+-- Связь параграфов и блоков
+CREATE TABLE paragraph_blocks (
+  id SERIAL PRIMARY KEY,
+  paragraph_id INTEGER NOT NULL REFERENCES paragraphs(id),
+  block_id INTEGER NOT NULL REFERENCES blocks(id)
+);
 
+-- Тесты
 CREATE TABLE tests (
   id SERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  lesson_id INTEGER NOT NULL REFERENCES lessons(id),
+  title VARCHAR NOT NULL,
+  block_id INTEGER NOT NULL REFERENCES blocks(id),
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+-- Связь тестов и глав
+CREATE TABLE test_blocks (
+  id SERIAL PRIMARY KEY,
+  test_id INTEGER NOT NULL REFERENCES tests(id),
+  block_id INTEGER NOT NULL REFERENCES blocks(id)
+);
 
+-- Связь вопросов и тестов
 CREATE TABLE test_questions (
   id SERIAL PRIMARY KEY,
   test_id INTEGER NOT NULL REFERENCES tests(id),
-  question TEXT NOT NULL,
-  correct_answer TEXT,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+  question VARCHAR NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
-
+-- Варианты ответов к вопросам и связь каждого вопроса с тестом
 CREATE TABLE test_answers (
   id SERIAL PRIMARY KEY,
   test_question_id INTEGER NOT NULL REFERENCES test_questions(id),
-  answer TEXT NOT NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+  answer VARCHAR NOT NULL,
+  is_correct BOOLEAN NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+-- Ответы пользователя
 CREATE TABLE user_answers (
-  id,
-  test_question_id,
-  test_answer_id,
-  correct_answer_id,
-  chosen_answer_id,
-  
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  test_question_id INTEGER NOT NULL REFERENCES test_questions(id),
+  chosen_answer_id INTEGER NOT NULL REFERENCES test_answers(id),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-

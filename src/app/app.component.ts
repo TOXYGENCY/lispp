@@ -14,6 +14,6 @@ import { RegistrationPageComponent } from './registration-page/registration-page
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'LISPP';
+
 }
 

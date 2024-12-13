@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { apiUrl, test_apiUrl } from '../../app.config';
 
 // В этом сервисе мы работаем с пользователями.
 // Отправляем запросы HTTP на адрес бекэнда (в контроллер php) и принимаем их оттуда
 @Injectable({ providedIn: 'root' })
 export class ApiUsersService {
-  // private apiUrl = 'http://localhost/api';
-  // Мой готовый бэкенд от другого проекта - для теста
-  private apiUrl = 'https://localhost:7150/api/v1';
+  private apiUrl = test_apiUrl;
 
   constructor(private http: HttpClient) { }
 
@@ -17,7 +16,11 @@ export class ApiUsersService {
     return this.http.get(`${this.apiUrl}/users`);
   }
 
-  // sendData(data: any): Observable<any> {
-  //   return this.http.post(`${this.apiUrl}/index.php`, data);
-  // }
+  Authenticate(credentials: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/auth`, credentials);
+  }
+
+  Register(credentials: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/register`, credentials);
+  }
 }
