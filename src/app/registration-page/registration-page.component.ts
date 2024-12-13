@@ -103,6 +103,7 @@ export class RegistrationPageComponent {
 
       error => {
         console.error(error);
+        console.error(error.error.text);
         this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
         this.showLoading = false;
         this.disableSubmit = false;
@@ -128,6 +129,7 @@ export class RegistrationPageComponent {
 
       error => {
         console.error(error);
+        console.error(error.error.text);
         this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
         this.showLoading = false;
         this.disableSubmit = false;

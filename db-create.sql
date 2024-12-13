@@ -1,3 +1,16 @@
+-- cmd.exe
+-- psql -h localhost -p 5432 -U postgres
+-- \i db-create.sql
+-- \q
+
+CREATE DATABASE lispp
+WITH ENCODING 'UTF8'
+LC_COLLATE='ru_RU.UTF-8'
+LC_CTYPE='ru_RU.UTF-8'
+TEMPLATE=template0;
+
+\connect lispp
+
 -- Коды администраторов
 CREATE TABLE admin_codes (
   id SERIAL PRIMARY KEY,
