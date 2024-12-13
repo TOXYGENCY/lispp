@@ -1,5 +1,5 @@
 <form (ngSubmit)="Submit()"
-    class="mt-8 max-w-29rem surface-card p-4 shadow-2 border-round w-full lg:w-6 mx-auto justify-center items-center">
+    class="mt-5 max-w-29rem surface-card p-4 shadow-2 border-round w-full lg:w-6 mx-auto justify-center items-center">
     <div class="text-center mb-5">
         <img src="assets/icons/favicons/android-chrome-192x192.png" alt="#" height="50" class="mb-3">
         <div class="text-900 text-3xl font-medium mb-3">{{ fullTitleRu }}.<br /> {{ isAuth ? "Вход" : "Регистрация" }}
@@ -48,31 +48,24 @@
             [required]="!isAuth">
 
         <div *ngIf="!isAuth">
-            <div *ngIf="userType === 'teacher'">
+            <div *ngIf="userType === '2' || userType === '1'">
                 <label for="orgCode" class="block text-900 font-medium mb-2">Код организации<span
                         class="text-red-500 text-sm">*</span></label>
-                <input id="orgCode" name="orgCode" [(ngModel)]="orgCode" type="text"
+                <input id="orgCode" name="orgCode" [(ngModel)]="orgCode" type="text" (input)="onInputChange()"
                     placeholder="Введите код Вашей организации" pInputText class="w-full mb-3" required>
             </div>
 
-            <div *ngIf="userType === 'admin'">
+            <div *ngIf="userType === '3'">
                 <label for="adminCode" class="block text-900 font-medium mb-2">Код администратора<span
                         class="text-red-500 text-sm">*</span></label>
-                <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text"
+                <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text" (input)="onInputChange()"
                     placeholder="Введите код администратора" pInputText class="w-full mb-3" required>
-            </div>
-
-            <div *ngIf="userType === 'student'">
-                <label for="grade" class="block text-900 font-medium mb-2">Класс<span
-                        class="text-red-500 text-sm">*</span></label>
-                <input id="grade" name="grade" [(ngModel)]="grade" type="text" placeholder="Введите класс" pInputText
-                    class="w-full mb-3" required>
             </div>
         </div>
 
 
         <div *ngIf="showErrorHint" class="text-red-500 text-sm font-medium mb-3">{{ hintText }}</div>
-        <button type="submit" pButton pRipple class="w-full">
+        <button [disabled]="disableSubmit" type="submit" pButton pRipple class="w-full">
             <span *ngIf="showLoading" class="pi pi-spin pi-spinner"></span>
             <span class="pl-2 text-center">{{ showLoading ? "Отправляем..." : submitLabel }}</span>
         </button>

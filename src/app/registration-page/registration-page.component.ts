@@ -34,10 +34,10 @@ export class RegistrationPageComponent {
   submitLabel: string = 'Подтвердить';
   fullTitleRu: string = fullTitleRu;
   hintText: string = 'Введите логин и пароль';
-  userType: string = '';
+  userType: string = "";
   adminCode: string = '';
-  grade: string = '';
   orgCode: string = '';
+  disableSubmit: boolean = false;
 
   ShowHint(state: boolean, text: string = "") {
     this.hintText = text !== '' ? text : this.hintText;
@@ -46,52 +46,72 @@ export class RegistrationPageComponent {
 
 
   onInputChange() {
-    if (this.email !== '' && this.passwordString !== '') {
-      this.ShowHint(false);
-    }
+    this.ShowHint(false);
   }
 
-  Authenticate() {
+  VerifyAdminCode() { // TODO: сделать проверку на админский код
+  }
+
+  VerifyOrgCode() { // TODO: сделать проверку на организационный код
+  }
+
+  VerifyForm(): boolean {
+    let result: boolean = true;
+    
     if (this.isAuth) {
       if (this.email === '' || this.passwordString === '') {
         this.ShowHint(true, "Введите логин и пароль");
-        return;
+        result = false;
       }
-
-      const credentials = {
-        email: this.email,
-        passwordString: this.passwordString
-      };
-
-      this.showLoading = true;
-
-      this.apiUsersService.Authenticate(credentials).subscribe(
-        response => {
-          if (response) {
-            // Перенаправление, все дела
-            console.log(response);
-          } else {
-            this.ShowHint(true, "Неверный пароль"); // При неверном логине показывается error с сообщением из бекенда
-            console.log(response);
-          }
-          this.showLoading = false;
-        },
-
-        error => {
-          console.error(error);
-          this.ShowHint(true, error.error);
-          this.showLoading = false;
-        }
-      );
+    } else {
+      // Проверка на заполнение нужных полей
+      if (!this.email || !this.passwordString || 
+        !this.name || !this.password2 || 
+        !this.userType || 
+        (!this.isAuth && 
+            (this.userType === '3' && !this.adminCode || 
+                (this.userType === '1' || this.userType === '2') 
+            && !this.orgCode)
+        )
+      ) {
+        this.ShowHint(true, "Заполните все поля.");
+        result = false;
+      }
     }
+    this.disableSubmit = false;
+    return result;
+  }
+
+  Authenticate() {
+    const credentials = {
+      email: this.email,
+      passwordString: this.passwordString
+    };
+
+    this.apiUsersService.Authenticate(credentials).subscribe(
+      response => {
+        if (response) {
+          // Перенаправление, все дела
+          console.log(response);
+        } else {
+          this.ShowHint(true, "Неверный логин или пароль");
+          console.log(response);
+        }
+        this.showLoading = false;
+        this.disableSubmit = false;
+      },
+
+      error => {
+        console.error(error);
+        this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
+        this.showLoading = false;
+        this.disableSubmit = false;
+      }
+    );
+
   }
 
   Register() {
-    if (this.email === '' || this.passwordString === '' || this.name === '' || this.password2 === '') {
-      this.ShowHint(true, "Заполните все поля.");
-      return;
-    }
-
     const credentials = {
       name: this.name,
       email: this.email,
@@ -103,21 +123,32 @@ export class RegistrationPageComponent {
         // Перенаправление, все дела
         console.log(response);
         this.showLoading = false;
+        this.disableSubmit = false;
       },
 
       error => {
         console.error(error);
-        this.ShowHint(true, error.error);
+        this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
         this.showLoading = false;
+        this.disableSubmit = false;
       }
     );
   }
+
   Submit() {
+    this.disableSubmit = true;
+    this.ShowHint(false);
+    if (!this.VerifyForm()) {
+      return;
+    }
     if (this.isAuth) {
+      this.showLoading = true;
       this.Authenticate();
+      this.disableSubmit = true;
     } else {
+      this.showLoading = true;
       this.Register();
+      this.disableSubmit = true;
     }
   }
-
 }

@@ -7,12 +7,13 @@ import { apiUrl, test_apiUrl } from '../../app.config';
 // Отправляем запросы HTTP на адрес бекэнда (в контроллер php) и принимаем их оттуда
 @Injectable({ providedIn: 'root' })
 export class ApiUsersService {
-  private apiUrl = test_apiUrl;
+  private apiUrl = apiUrl;
+  // private apiUrl = test_apiUrl;
 
   constructor(private http: HttpClient) { }
 
   // Observable, потому что это аналог Task - асинхронный контейнер метода, который можно ожидать
-  getAll(): Observable<any> {
+  GetAll(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users`);
   }
 

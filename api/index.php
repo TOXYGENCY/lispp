@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // && strpos($requestUri, '/your-en
   // $stmt->execute();
 
   // Возвращаем ответ
-  echo json_encode(['status' => 'success']);
+  echo json_encode(['status' => 'index.php success']);
 } else {
   echo json_encode(['status' => 'error', 'message' => 'Invalid request at index.php']);
 }
