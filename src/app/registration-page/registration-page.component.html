@@ -10,19 +10,14 @@
     </div>
 
     <div>
-        <div *ngIf="!isAuth">
+        <div>
             <label for="userType" class="block text-900 font-medium mb-2">Тип пользователя<span
                     class="text-red-500 text-sm">*</span></label>
-            <!-- <form [(ngModel)]="userType" name="userType" class="card flex justify-center w-full mb-3" required>
-                <p-select formControlName="selectedCity" [options]="cities" optionLabel="name"
-                    placeholder="Выберите тип пользователя" class="w-full md:w-56" />
-                    
-            </form> -->
             <select id="userType" [(ngModel)]="userType" name="userType" class="w-full mb-3" required>
                 <option value="" disabled selected>Выберите тип пользователя</option>
                 <option value="1">Ученик</option>
                 <option value="2">Преподаватель</option>
-                <option value="3">Админ</option>
+                <option *ngIf="isAuth" value="3">Администратор</option>
             </select>
         </div>
 
@@ -47,20 +42,18 @@
             name="password2" type="password" placeholder="Повторите пароль" pInputText class="w-full mb-3"
             [required]="!isAuth">
 
-        <div *ngIf="!isAuth">
-            <div *ngIf="userType === '2' || userType === '1'">
-                <label for="orgCode" class="block text-900 font-medium mb-2">Код организации<span
-                        class="text-red-500 text-sm">*</span></label>
-                <input id="orgCode" name="orgCode" [(ngModel)]="orgCode" type="text" (input)="onInputChange()"
-                    placeholder="Введите код Вашей организации" pInputText class="w-full mb-3" required>
-            </div>
+        <div *ngIf="!isAuth && userType !== '3'">
+            <label for="orgCode" class="block text-900 font-medium mb-2">Код организации<span
+                    class="text-red-500 text-sm">*</span></label>
+            <input id="orgCode" name="orgCode" [(ngModel)]="orgCode" type="text" (input)="onInputChange()"
+                placeholder="Введите код Вашей организации" pInputText class="w-full mb-3" required>
+        </div>
 
-            <div *ngIf="userType === '3'">
-                <label for="adminCode" class="block text-900 font-medium mb-2">Код администратора<span
-                        class="text-red-500 text-sm">*</span></label>
-                <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text" (input)="onInputChange()"
-                    placeholder="Введите код администратора" pInputText class="w-full mb-3" required>
-            </div>
+        <div *ngIf="isAuth && userType === '3'">
+            <label for="adminCode" class="block text-900 font-medium mb-2">Код администратора<span
+                    class="text-red-500 text-sm">*</span></label>
+            <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text" (input)="onInputChange()"
+                placeholder="Введите код администратора" pInputText class="w-full mb-3" required>
         </div>
 
 
