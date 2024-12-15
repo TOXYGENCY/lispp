@@ -18,11 +18,11 @@ require_once 'database.php';
 
 // Создаем экземпляр класса Database
 $database = new Database();
-$db = $database->GetConnection(); // Получаем соединение
+// $db_conn = $database->GetConnection(); // Получаем соединение
 
 // Подключаем необходимые файлы контроллеров
 require_once 'controllers/users-controller.php';
-$users_controller = new UsersController($db);
+$users_controller = new UsersController($database);
 
 
 // Получаем текущий URL
@@ -48,11 +48,13 @@ if ($uriParts[0] === 'api' && $uriParts[1] === 'users') {
       }
       break;
     case 'POST':
+      $credentials = json_decode(file_get_contents('php://input'));
       if ($uriParts[2] === 'auth') {
-        $controller->Authenticate();
+        $controller->Authenticate((array)$credentials);
+      } elseif ($uriParts[2] === 'register') {
+        $controller->CreateUser((array)$credentials);
       }
       // api/users
-      $controller->CreateUser();
       break;
     case 'PUT':
       // api/users/{id}

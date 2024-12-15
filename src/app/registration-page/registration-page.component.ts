@@ -7,6 +7,8 @@ import { ApiUsersService } from "../api-services/users/api-users.service";
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { fullTitleRu } from '../app.config';
+import { User } from '../domain-models/User';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -22,7 +24,7 @@ import { fullTitleRu } from '../app.config';
 })
 
 export class RegistrationPageComponent {
-  constructor(private apiUsersService: ApiUsersService) { }
+  constructor(private apiUsersService: ApiUsersService, private router: Router) { }
 
   showErrorHint: boolean = false;
   showLoading: boolean = false;
@@ -49,28 +51,22 @@ export class RegistrationPageComponent {
     this.ShowHint(false);
   }
 
-  VerifyAdminCode() { // TODO: сделать проверку на админский код
-  }
-
-  VerifyOrgCode() { // TODO: сделать проверку на организационный код
-  }
-
   VerifyForm(): boolean {
     let result: boolean = true;
     
     if (this.isAuth) {
-      if (this.email === '' || this.passwordString === '') {
-        this.ShowHint(true, "Введите логин и пароль");
+      // Проверка на заполнение нужных полей входа
+      if (!this.userType || !this.email || !this.passwordString || (this.userType === '3' && !this.adminCode)) {
+        this.ShowHint(true, "Заполните все поля.");
         result = false;
       }
     } else {
-      // Проверка на заполнение нужных полей
+      // Проверка на заполнение нужных полей регистрации
       if (!this.email || !this.passwordString || 
         !this.name || !this.password2 || 
-        !this.userType || 
-        (!this.isAuth && 
-            (this.userType === '3' && !this.adminCode || 
-                (this.userType === '1' || this.userType === '2') 
+        this.userType === '' || 
+        ((this.userType === '3' && !this.adminCode || 
+              (this.userType === '1' || this.userType === '2') 
             && !this.orgCode)
         )
       ) {
@@ -84,14 +80,17 @@ export class RegistrationPageComponent {
 
   Authenticate() {
     const credentials = {
-      email: this.email,
-      passwordString: this.passwordString
+      email: this.email.toLowerCase(),
+      passwordString: this.passwordString,
+      userType: this.userType,
+      adminCode: this.adminCode
     };
 
     this.apiUsersService.Authenticate(credentials).subscribe(
       response => {
         if (response) {
           // Перенаправление, все дела
+          this.router.navigate(['/chapters']);
           console.log(response);
         } else {
           this.ShowHint(true, "Неверный логин или пароль");
@@ -102,8 +101,9 @@ export class RegistrationPageComponent {
       },
 
       error => {
+        console.error(error.message);
         console.error(error);
-        console.error(error.error.text);
+        console.error(error.error);
         this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
         this.showLoading = false;
         this.disableSubmit = false;
@@ -113,23 +113,27 @@ export class RegistrationPageComponent {
   }
 
   Register() {
-    const credentials = {
+    const NewUser: User = {
       name: this.name,
-      email: this.email,
-      passwordString: this.passwordString
+      email: this.email.toLowerCase(),
+      password: this.passwordString,
+      userType: Number(this.userType),
+      orgCode: this.orgCode
     };
 
-    this.apiUsersService.Register(credentials).subscribe(
+    this.apiUsersService.Register(NewUser).subscribe(
       response => {
         // Перенаправление, все дела
+        this.router.navigate(['/chapters']);
         console.log(response);
         this.showLoading = false;
         this.disableSubmit = false;
       },
 
       error => {
+        console.error(error.message);
         console.error(error);
-        console.error(error.error.text);
+        console.error(error.error);
         this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
         this.showLoading = false;
         this.disableSubmit = false;
