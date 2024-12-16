@@ -40,6 +40,7 @@ export class RegistrationPageComponent {
   adminCode: string = '';
   orgCode: string = '';
   disableSubmit: boolean = false;
+  loginRedirect: any = ['/chapters'];
 
   ShowHint(state: boolean, text: string = "") {
     this.hintText = text !== '' ? text : this.hintText;
@@ -53,7 +54,7 @@ export class RegistrationPageComponent {
 
   VerifyForm(): boolean {
     let result: boolean = true;
-    
+
     if (this.isAuth) {
       // Проверка на заполнение нужных полей входа
       if (!this.userType || !this.email || !this.passwordString || (this.userType === '3' && !this.adminCode)) {
@@ -62,12 +63,12 @@ export class RegistrationPageComponent {
       }
     } else {
       // Проверка на заполнение нужных полей регистрации
-      if (!this.email || !this.passwordString || 
-        !this.name || !this.password2 || 
-        this.userType === '' || 
-        ((this.userType === '3' && !this.adminCode || 
-              (this.userType === '1' || this.userType === '2') 
-            && !this.orgCode)
+      if (!this.email || !this.passwordString ||
+        !this.name || !this.password2 ||
+        this.userType === '' ||
+        ((this.userType === '3' && !this.adminCode ||
+          (this.userType === '1' || this.userType === '2')
+          && !this.orgCode)
         )
       ) {
         this.ShowHint(true, "Заполните все поля.");
@@ -79,18 +80,17 @@ export class RegistrationPageComponent {
   }
 
   Authenticate() {
-    const credentials = {
+    const Credentials = {
       email: this.email.toLowerCase(),
       passwordString: this.passwordString,
       userType: this.userType,
       adminCode: this.adminCode
     };
 
-    this.apiUsersService.Authenticate(credentials).subscribe(
+    this.apiUsersService.AuthenticateAndSetCurrentUser(Credentials).subscribe(
       response => {
         if (response) {
-          // Перенаправление, все дела
-          this.router.navigate(['/chapters']);
+          this.router.navigate(this.loginRedirect);
           console.log(response);
         } else {
           this.ShowHint(true, "Неверный логин или пароль");
@@ -121,10 +121,15 @@ export class RegistrationPageComponent {
       orgCode: this.orgCode
     };
 
-    this.apiUsersService.Register(NewUser).subscribe(
+    this.apiUsersService.RegisterAndSetCurrentUser(NewUser).subscribe(
       response => {
-        // Перенаправление, все дела
-        this.router.navigate(['/chapters']);
+        if (response) {
+          // Перенаправление, все дела
+          this.router.navigate(this.loginRedirect);
+        } else {
+          this.ShowHint(true, "Не удалось создать пользователя. Такой E-mail уже есть или неверный код организации.");
+          console.log(response);
+        }
         console.log(response);
         this.showLoading = false;
         this.disableSubmit = false;

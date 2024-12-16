@@ -6,6 +6,7 @@ export const routes: Routes = [
     { path: '', component: RegistrationPageComponent },
     { path: 'login', component: RegistrationPageComponent },
     { path: 'register', component: RegistrationPageComponent }, 
+    { path: 'home', component: RegistrationPageComponent }, 
     { path: 'chapters', component: ChaptersPageComponent }, // Страница глав
     { path: '**', redirectTo: '' } // Перенаправление на логин для несуществующих маршрутов
 ];

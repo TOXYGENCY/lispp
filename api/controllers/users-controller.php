@@ -62,9 +62,15 @@ class UsersController
         $this->json($users);
     }
 
-    public function GetUser($id)
+    public function GetUserById($id)
     {
         $user = $this->database->Execute("SELECT * FROM users WHERE id = '$id'")->fetch(PDO::FETCH_ASSOC);
+        $this->json($user);
+    }
+
+    public function GetUserByEmail($email)
+    {
+        $user = $this->database->Execute("SELECT * FROM users WHERE email = '$email'")->fetch(PDO::FETCH_ASSOC);
         $this->json($user);
     }
 

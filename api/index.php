@@ -39,9 +39,13 @@ if ($uriParts[0] === 'api' && $uriParts[1] === 'users') {
   // Определяем метод в зависимости от запроса
   switch ($requestMethod) {
     case 'GET':
+      if (isset($uriParts[2]) && $uriParts[2] == "email" && isset($uriParts[3])) {
+        $controller->GetUserByEmail($uriParts[3]); // api/users/email/{email}
+        return;
+      }
       if (isset($uriParts[2])) {
         // Если есть что-то после api/users. Например, api/users/{id}
-        $controller->GetUser($uriParts[2]);
+        $controller->GetUserById($uriParts[2]);
       } else {
         // api/users
         $controller->GetAllUsers();
