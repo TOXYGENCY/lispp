@@ -36,9 +36,9 @@ export class RegistrationPageComponent {
   submitLabel: string = 'Подтвердить';
   fullTitleRu: string = fullTitleRu;
   hintText: string = 'Введите логин и пароль';
-  userType: string = "";
+  user_type: string = "";
   adminCode: string = '';
-  orgCode: string = '';
+  organization_code: string = '';
   disableSubmit: boolean = false;
   loginRedirect: any = ['/chapters'];
 
@@ -46,7 +46,6 @@ export class RegistrationPageComponent {
     this.hintText = text !== '' ? text : this.hintText;
     this.showErrorHint = state;
   }
-
 
   onInputChange() {
     this.ShowHint(false);
@@ -57,7 +56,7 @@ export class RegistrationPageComponent {
 
     if (this.isAuth) {
       // Проверка на заполнение нужных полей входа
-      if (!this.userType || !this.email || !this.passwordString || (this.userType === '3' && !this.adminCode)) {
+      if (!this.user_type || !this.email || !this.passwordString || (this.user_type === '3' && !this.adminCode)) {
         this.ShowHint(true, "Заполните все поля.");
         result = false;
       }
@@ -65,13 +64,18 @@ export class RegistrationPageComponent {
       // Проверка на заполнение нужных полей регистрации
       if (!this.email || !this.passwordString ||
         !this.name || !this.password2 ||
-        this.userType === '' ||
-        ((this.userType === '3' && !this.adminCode ||
-          (this.userType === '1' || this.userType === '2')
-          && !this.orgCode)
+        this.user_type === '' ||
+        ((this.user_type === '3' && !this.adminCode ||
+          (this.user_type === '1' || this.user_type === '2')
+          && !this.organization_code)
         )
       ) {
         this.ShowHint(true, "Заполните все поля.");
+        result = false;
+      }
+
+      if (this.passwordString !== this.password2) {
+        this.ShowHint(true, "Пароли не совпадают.");
         result = false;
       }
     }
@@ -83,19 +87,19 @@ export class RegistrationPageComponent {
     const Credentials = {
       email: this.email.toLowerCase(),
       passwordString: this.passwordString,
-      userType: this.userType,
+      user_type: this.user_type,
       adminCode: this.adminCode
     };
 
     this.apiUsersService.AuthenticateAndSetCurrentUser(Credentials).subscribe(
-      response => {
-        if (response) {
+      (response: any) => { // Сюда приходит ответ из api AuthenticateAndSetCurrentUser в виде {user?: User, message?: string}
+        if (response.user) {
+          // Перенаправление, все дела
           this.router.navigate(this.loginRedirect);
-          console.log(response);
         } else {
-          this.ShowHint(true, "Неверный логин или пароль");
-          console.log(response);
+          this.ShowHint(true, response.message);
         }
+        console.log(response);
         this.showLoading = false;
         this.disableSubmit = false;
       },
@@ -104,7 +108,7 @@ export class RegistrationPageComponent {
         console.error(error.message);
         console.error(error);
         console.error(error.error);
-        this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
+        this.ShowHint(true, "Ошибка сервиса (код 500). Поробуйте позже.");
         this.showLoading = false;
         this.disableSubmit = false;
       }
@@ -117,18 +121,19 @@ export class RegistrationPageComponent {
       name: this.name,
       email: this.email.toLowerCase(),
       password: this.passwordString,
-      userType: Number(this.userType),
-      orgCode: this.orgCode
+      user_type: Number(this.user_type),
+      organization_code: this.organization_code
     };
+    // console.log(NewUser);
+
 
     this.apiUsersService.RegisterAndSetCurrentUser(NewUser).subscribe(
-      response => {
-        if (response) {
+      (response: any) => { // Сюда приходит ответ из api RegisterAndSetCurrentUser в виде {user?: User, message?: string}
+        if (response.user) {
           // Перенаправление, все дела
           this.router.navigate(this.loginRedirect);
         } else {
-          this.ShowHint(true, "Не удалось создать пользователя. Такой E-mail уже есть или неверный код организации.");
-          console.log(response);
+          this.ShowHint(true, response.message);
         }
         console.log(response);
         this.showLoading = false;
@@ -139,7 +144,7 @@ export class RegistrationPageComponent {
         console.error(error.message);
         console.error(error);
         console.error(error.error);
-        this.ShowHint(true, "Ошибка сервиса. Поробуйте позже.");
+        this.ShowHint(true, "Ошибка сервиса (код 500). Поробуйте позже.");
         this.showLoading = false;
         this.disableSubmit = false;
       }

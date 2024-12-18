@@ -16,7 +16,7 @@ export class ApiUsersService {
   }
 
   // Сохранение пользователя в sessionStorage
-  SetCurrentUser(user: User | null): void {
+  public SetCurrentUser(user: User | null): void {
     this._currentUser = user;
     sessionStorage.setItem('CurrentUser', JSON.stringify(user));
   }
@@ -29,16 +29,17 @@ export class ApiUsersService {
     }
   }
 
-  GetCurrentUser(): User | null {
+  public GetCurrentUser(): User | null {
+    this._LoadCurrentUserFromStorage();
     return this._currentUser;
   }
 
   // Observable, потому что это аналог Task - асинхронный контейнер метода, который можно ожидать
-  GetAll(): Observable<any> {
+  public GetAll(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users`);
   }
 
-  GetUserById(id: string): Observable<User | null> {
+  public GetUserById(id: string): Observable<User | null> {
     return this.http.get<User>(`${this.apiUrl}/users/${id}`).pipe(
       map(user => {
         // Если пользователь не найден, возвращаем null
@@ -54,7 +55,7 @@ export class ApiUsersService {
     );
   }
 
-  GetUserByEmail(email: string): Observable<User | null> {
+  public GetUserByEmail(email: string): Observable<User | null> {
     return this.http.get<User>(`${this.apiUrl}/users/email/${email}`).pipe(
       map(user => {
         // Если пользователь не найден, возвращаем null
@@ -70,16 +71,14 @@ export class ApiUsersService {
     );
   }
 
-  Authenticate(credentials: any): Observable<any> {
+  // Основной метод регистрации - !вызывается из публичного AuthenticateAndSetCurrentUser
+  private _Authenticate(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/users/auth`, credentials);
   }
 
-  Register(User: User): Observable<any> {
-    return this.http.post(`${this.apiUrl}/users/register`, User);
-  }
 
-  AuthenticateAndSetCurrentUser(credentials: any): Observable<User | null> {
-    return this.Authenticate(credentials).pipe(
+  public AuthenticateAndSetCurrentUser(credentials: any): Observable<User | null> {
+    return this._Authenticate(credentials).pipe(
       switchMap(response => {
         if (response) {
           return this.GetUserByEmail(credentials['email']).pipe(
@@ -97,21 +96,44 @@ export class ApiUsersService {
     );
   }
 
-  RegisterAndSetCurrentUser(User: User): Observable<User | null> {
-    return this.Register(User).pipe(
-      switchMap(response => {
-        if (response) {
-          return this.GetUserByEmail(User['email']).pipe(
-            tap(user => {
-              this.SetCurrentUser(user); // Устанавливаем текущего пользователя
-            })
-          );
+  // Основной метод регистрации - вызывается из публичного RegisterAndSetCurrentUser
+  private _Register(User: User): Observable<any> {
+    return this.http.post(`${this.apiUrl}/users/register`, User).pipe(
+      tap(response => console.log('Response from _Register:', response)),
+
+      map((response: any) => { // Сюда приходит ответ из PHP
+        if (response.success) {
+          return { user: response.user, message: null }; // В RegisterAndSetCurrentUser возвращаем пользователя, если регистрация успешна
         } else {
-          return of(null); // Если аутентификация не удалась, возвращаем null
+          throw new Error(response.message); // Генерируем ошибку в RegisterAndSetCurrentUser в catchError, если регистрация не удалась
         }
       }),
-      catchError(() => {
-        return of(null); // Обработка ошибок
+
+      catchError((error: any) => {
+        console.error(error);
+        return of({ user: null, message: error.message }); // В RegisterAndSetCurrentUser возвращаем объект с ошибкой из PHP и null
+      })
+    );
+  }
+
+  public RegisterAndSetCurrentUser(User: User): Observable<any> {
+    return this._Register(User).pipe(
+
+      switchMap(
+        (response: any) => { // Сюда приходит ответ из _Register
+          if (response.user) {
+            console.log("REG SETTING USER: ", response.user);
+            this.SetCurrentUser(response.user); // Устанавливаем текущего пользователя
+            return of({ user: response.user, message: null });
+          } else {
+            console.log("REG FAIL: ", response.message);
+            return of({ user: null, message: response.message }); // Если аутентификация не удалась, возвращаем null
+          }
+        }),
+
+      catchError((error) => {
+        console.error(error);
+        return of({ user: null, message: error.message }); // Обработка ошибок
       })
     );
   }

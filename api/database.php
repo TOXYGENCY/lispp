@@ -37,12 +37,14 @@ class Database
         return $this->conn;
     }
 
-    public function Execute($query){
-        if ($this->conn == null){
+    public function Execute($query, $params = [])
+    {
+        if ($this->conn == null) {
             $this->conn = $this->GetConnection();
         }
+        
         $statement = $this->conn->prepare($query);
-        $statement->execute();
+        $statement->execute($params);
         return $statement;
     }
 }

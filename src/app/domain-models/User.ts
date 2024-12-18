@@ -3,9 +3,9 @@ export interface User {
     name: string;
     email: string;
     password?: string | null;
-    userType: number;
-    orgCode?: string | null;
-    orgId?: string | null;
+    user_type: number;
+    organization_code?: string | null;
+    organization_id?: string | null;
     createdAt?: Date | null;
     updatedAt?: Date | null;
 }

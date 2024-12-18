@@ -1,5 +1,5 @@
 export interface Organization {
   id?: string | null;
-  orgCode: string;
+  organization_code: string;
   name?: string | null;
 }

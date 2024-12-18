@@ -12,9 +12,8 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent implements OnInit {
-  isLogged: boolean = false;
   ngOnInit(): void {
-    sessionStorage.getItem("isLogged"); 
+    
   }
 }
 

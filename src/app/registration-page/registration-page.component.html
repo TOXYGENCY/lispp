@@ -11,9 +11,9 @@
 
     <div>
         <div>
-            <label for="userType" class="block text-900 font-medium mb-2">Тип пользователя<span
+            <label for="user_type" class="block text-900 font-medium mb-2">Тип пользователя<span
                     class="text-red-500 text-sm">*</span></label>
-            <select id="userType" [(ngModel)]="userType" name="userType" class="w-full mb-3" required>
+            <select id="user_type" [(ngModel)]="user_type" name="user_type" class="w-full mb-3" required>
                 <option value="" disabled selected>Выберите тип пользователя</option>
                 <option value="1">Ученик</option>
                 <option value="2">Преподаватель</option>
@@ -42,14 +42,14 @@
             name="password2" type="password" placeholder="Повторите пароль" pInputText class="w-full mb-3"
             [required]="!isAuth">
 
-        <div *ngIf="!isAuth && userType !== '3'">
-            <label for="orgCode" class="block text-900 font-medium mb-2">Код организации<span
+        <div *ngIf="!isAuth && user_type !== '3'">
+            <label for="organization_code" class="block text-900 font-medium mb-2">Код организации<span
                     class="text-red-500 text-sm">*</span></label>
-            <input id="orgCode" name="orgCode" [(ngModel)]="orgCode" type="text" (input)="onInputChange()"
+            <input id="organization_code" name="organization_code" [(ngModel)]="organization_code" type="text" (input)="onInputChange()"
                 placeholder="Введите код Вашей организации" pInputText class="w-full mb-3" required>
         </div>
 
-        <div *ngIf="isAuth && userType === '3'">
+        <div *ngIf="isAuth && user_type === '3'">
             <label for="adminCode" class="block text-900 font-medium mb-2">Код администратора<span
                     class="text-red-500 text-sm">*</span></label>
             <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text" (input)="onInputChange()"
