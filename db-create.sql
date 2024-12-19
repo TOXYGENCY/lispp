@@ -121,3 +121,5 @@ CREATE TABLE user_answers (
 
 INSERT INTO organizations (code, name) VALUES ('001', 'MGPPU');
 INSERT INTO admin_codes (code) VALUES ('0001');
+
+INSERT INTO users (name, email, password, user_type) VALUES ('admin', 'admin@admin.ru', 'admin', '3')
