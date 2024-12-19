@@ -5,20 +5,13 @@
         <div class="text-900 text-3xl font-medium mb-3">{{ fullTitleRu }}.<br /> {{ isAuth ? "Вход" : "Регистрация" }}
         </div>
         <span class="text-600 font-medium line-height-3">{{ isAuth ? "Нет аккаунта" : "Есть аккаунт" }}?</span>
-        <a (click)="isAuth=!isAuth" class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">{{ isAuth ?
+        <a (click)="isAuth=!isAuth; UpdateUserTypes();" class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">{{ isAuth ?
             "Зарегистрироваться" : "Войти" }}.</a>
     </div>
 
     <div>
-        <div>
-            <label for="user_type" class="block text-900 font-medium mb-2">Тип пользователя<span
-                    class="text-red-500 text-sm">*</span></label>
-            <select id="user_type" [(ngModel)]="user_type" name="user_type" class="w-full mb-3" required>
-                <option value="" disabled selected>Выберите тип пользователя</option>
-                <option value="1">Ученик</option>
-                <option value="2">Преподаватель</option>
-                <option *ngIf="isAuth" value="3">Администратор</option>
-            </select>
+        <div class="card flex justify-content-center mb-4">
+            <p-selectButton [options]="user_types" [allowEmpty]="false"  [(ngModel)]="user_type" optionLabel="type" name="user_type" optionValue="value" />
         </div>
 
         <label *ngIf="!isAuth" for="name" class="block text-900 font-medium mb-2">Имя<span
@@ -27,8 +20,8 @@
             placeholder="Имя" pInputText class="w-full mb-3" [required]="!isAuth">
 
         <label for="email" class="block text-900 font-medium mb-2">E-mail<span
-                class="text-red-500 text-sm">*</span></label>
-        <input id="email" name="email" [(ngModel)]="email" (input)="onInputChange()" type="text"
+                class="text-red-500 text-sm" >*</span></label>
+        <input id="email" name="email" type="email" [formControl]="emailValidator" [(ngModel)]="email" (input)="onInputChange()" type="text"
             placeholder="Электронная почта" pInputText class="w-full mb-3" required>
 
         <label for="password" class="block text-900 font-medium mb-2">Пароль<span
@@ -42,14 +35,14 @@
             name="password2" type="password" placeholder="Повторите пароль" pInputText class="w-full mb-3"
             [required]="!isAuth">
 
-        <div *ngIf="!isAuth && user_type !== '3'">
+        <div *ngIf="!isAuth && user_type !== 3">
             <label for="organization_code" class="block text-900 font-medium mb-2">Код организации<span
                     class="text-red-500 text-sm">*</span></label>
             <input id="organization_code" name="organization_code" [(ngModel)]="organization_code" type="text" (input)="onInputChange()"
                 placeholder="Введите код Вашей организации" pInputText class="w-full mb-3" required>
         </div>
 
-        <div *ngIf="isAuth && user_type === '3'">
+        <div *ngIf="isAuth && user_type === 3">
             <label for="adminCode" class="block text-900 font-medium mb-2">Код администратора<span
                     class="text-red-500 text-sm">*</span></label>
             <input id="adminCode" name="adminCode" [(ngModel)]="adminCode" type="text" (input)="onInputChange()"

@@ -1,4 +1,8 @@
 <?php
+
+require_once 'headers.php';
+
+
 class Database
 {
     private $host = 'localhost'; // Хост базы данных

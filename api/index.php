@@ -1,19 +1,8 @@
 <?php
 // Это главный контроллер, который распределяет запросы в специализированные контроллеры
 
-// Разрешаем CORS
-header("Access-Control-Allow-Origin: http://localhost:4200"); // Укажите ваш фронтенд
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
-header('Content-Type: application/json');
-  
 
-// Обработка preflight-запроса
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-  http_response_code(200);
-  exit();
-}
-
+require_once 'headers.php';
 require_once 'database.php';
 
 // Создаем экземпляр класса Database
@@ -40,6 +29,7 @@ if ($uriParts[0] === 'api' && $uriParts[1] === 'users') {
   switch ($requestMethod) {
     case 'GET':
       if (isset($uriParts[2]) && $uriParts[2] == "email" && isset($uriParts[3])) {
+        // echo var_dump(headers_list());
         $controller->GetUserByEmail($uriParts[3]); // api/users/email/{email}
         return;
       }

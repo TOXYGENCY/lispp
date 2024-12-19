@@ -1,5 +1,10 @@
 <?php
-class UsersController
+require_once 'headers.php';
+
+
+// require_once 'base-controller.php';
+
+class UsersController //extends BaseController
 {
     // private $db;
     private $database;
@@ -22,29 +27,36 @@ class UsersController
 
     public function Authenticate($credentials)
     {
-        $user = $this->database->Execute("SELECT * FROM users WHERE email = ? AND user_type = ?", 
-                                        [$credentials['email'], $credentials['user_type']])->fetch(PDO::FETCH_ASSOC);        
+        // Получаем пользователя по email и типу пользователя
+        $user = $this->database->Execute(
+            "SELECT * FROM users WHERE email = ? AND user_type = ?",
+            [$credentials['email'], $credentials['user_type']]
+        )->fetch(PDO::FETCH_ASSOC);
+        // Проверяем, существует ли пользователь
         if (!$user) {
-            $this->json($user);
+            $this->json(['success' => false, 'message' => 'Пользователь не найден.']);
             return;
-        } else {
-            if ($credentials['user_type'] === '3' and !$this->CheckCode($credentials['adminCode'], 'admin_codes')) {
-                return;
-            }
-            if (!password_verify($credentials['passwordString'], $user['password'])) {
-                $this->json(false);
-                return;
-            } else {
-                $this->json(true);
-                return;
-            }
         }
+        // Проверяем код администратора, если это администратор
+        if ($credentials['user_type'] === '3' && !$this->CheckCode($credentials['adminCode'], 'admin_codes')) {
+            $this->json(['success' => false, 'message' => 'Неверный код администратора.']);
+            return;
+        }
+        // Проверяем пароль
+        // if (!password_verify($credentials['passwordString'], $user['password'])) {
+        if ($credentials['passwordString'] !== $user['password']) {
+            $this->json(['success' => false, 'message' => 'Неверный пароль.']);
+            return;
+        }
+        // Если аутентификация успешна, возвращаем данные пользователя
+        $this->json(['success' => true, 'user' => $user]);
     }
 
     public function CreateUser($User)
     {
-        // Хешируем пароль
-        $passwordHash = password_hash($User['password'], PASSWORD_DEFAULT);
+        // Можно хешировать пароль, если нужно, но в данном случае не будем
+        // $passwordHash = password_hash($User['password'], PASSWORD_DEFAULT);
+        $passwordHash = $User['password'];
 
         // Проверяем код организации
         $specifiedOrg = $this->CheckCode($User['organization_code'], 'organizations');
@@ -85,26 +97,27 @@ class UsersController
 
     public function GetUserById($id)
     {
-        $user = $this->database->Execute("SELECT * FROM users WHERE id = '$id'")->fetch(PDO::FETCH_ASSOC);
+        $user = $this->database->Execute("SELECT * FROM users WHERE id = ?", [$id])->fetch(PDO::FETCH_ASSOC);
         $this->json($user);
     }
 
     public function GetUserByEmail($email)
     {
-        $user = $this->database->Execute("SELECT * FROM users WHERE email = '$email'")->fetch(PDO::FETCH_ASSOC);
+        $email = urldecode($email);
+        $user = $this->database->Execute("SELECT * FROM users WHERE email = ?", [$email])->fetch(PDO::FETCH_ASSOC);
         $this->json($user);
     }
 
     public function UpdateUser($User)
     {
         $id = $User['id'];
-        $statement = $this->database->Execute("UPDATE users SET name = '{$User['name']}', password = '{$User['password']}', email = '{$User['email']}', user_type = '{$User['user_type']}', updated_at = NOW() WHERE id = '$id'");
+        $this->database->Execute("UPDATE users SET name = ?, password = ?, email = ?, user_type = ?, updated_at = NOW() WHERE id = ?", [$User['name'], $User['password'], $User['email'], $User['user_type'], $id]);
         $this->json(['message' => "Обновление пользователя с ID: $id"]);
     }
 
     public function DeleteUser($id)
     {
-        $statement = $this->database->Execute("DELETE FROM users WHERE id = '$id'");
+        $this->database->Execute("DELETE FROM users WHERE id = ?", [$id]);
         $this->json(['message' => "Удаление пользователя с ID: $id"]);
     }
 }
