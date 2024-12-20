@@ -8,10 +8,10 @@ import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms'
 import { CommonModule } from '@angular/common';
 import { fullTitleRu } from '../app.config';
 import { User } from '../domain-models/User';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { RouterOutlet } from '@angular/router';
+
 
 
 
@@ -22,7 +22,7 @@ import { RouterOutlet } from '@angular/router';
     CheckboxModule, StyleClassModule,
     ButtonModule, InputTextModule, FormsModule,
     CommonModule, ReactiveFormsModule,
-    SelectButtonModule, RouterOutlet 
+    SelectButtonModule, RouterOutlet
   ],
   templateUrl: './registration-page.component.html',
   styleUrl: './registration-page.component.scss',
