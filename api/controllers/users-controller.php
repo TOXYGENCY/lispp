@@ -1,10 +1,7 @@
 <?php
 require_once 'headers.php';
 
-
-// require_once 'base-controller.php';
-
-class UsersController //extends BaseController
+class UsersController
 {
     // private $db;
     private $database;
@@ -18,7 +15,7 @@ class UsersController //extends BaseController
         echo json_encode($content, JSON_UNESCAPED_UNICODE, JSON_UNESCAPED_SLASHES);
     }
 
-    private function _CheckCode($code, $table)
+    private function _GetByCode($code, $table)
     {
         $statement = $this->database->Execute("SELECT * FROM $table WHERE code = ?", [$code]);
         $result = $statement->fetch(PDO::FETCH_ASSOC);
@@ -38,7 +35,7 @@ class UsersController //extends BaseController
             return;
         }
         // Проверяем код администратора, если это администратор
-        if ($credentials['user_type'] === 3 && !$this->_CheckCode($credentials['adminCode'], 'admin_codes')) {
+        if ($credentials['user_type'] === 3 && !$this->_GetByCode($credentials['adminCode'], 'admin_codes')) {
             $this->_json(['success' => false, 'message' => 'Неверный код администратора.']);
             return;
         }
@@ -59,7 +56,7 @@ class UsersController //extends BaseController
         $passwordHash = $User['password'];
 
         // Проверяем код организации
-        $specifiedOrg = $this->_CheckCode($User['organization_code'], 'organizations');
+        $specifiedOrg = $this->_GetByCode($User['organization_code'], 'organizations');
         if (!$specifiedOrg) {
             $this->_json(['success' => false, 'message' => 'Несуществующий код организации.']);
             return;
@@ -74,14 +71,19 @@ class UsersController //extends BaseController
         }
 
         // Подготовка SQL-запроса для вставки нового пользователя
-        $insertQuery = "INSERT INTO users (name, email, password, user_type, organization_id) VALUES (?, ?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO users (name, email, password, user_type) VALUES (?, ?, ?, ?)";
 
         // Выполняем запрос на вставку
-        if ($this->database->Execute($insertQuery, [$User['name'], $User['email'], $passwordHash, $User['user_type'], $specifiedOrg['id']])) {
+        if ($this->database->Execute($insertQuery, [$User['name'], $User['email'], $passwordHash, $User['user_type']])) {
             // Если пользователь успешно создан, получаем его данные
             $userData = $this->database->Execute("SELECT * FROM users WHERE email = ?", [$User['email']])->fetch(PDO::FETCH_ASSOC);
 
-            // Возвращаем данные пользователя
+            // Связываем юзера и организацию
+            $this->database->Execute(
+                "INSERT INTO users_organizations (user_id, organization_id) VALUES (?, ?)",
+                [$userData['id'], $specifiedOrg['id']]
+            );
+            // Возвращаем данные нового юзера
             $this->_json(['success' => true, 'user' => $userData]);
         } else {
             // Если произошла ошибка при вставке, возвращаем ошибку

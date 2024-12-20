@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
 import { MenubarModule } from 'primeng/menubar';
 import { ApiUsersService } from '../api-services/users/api-users.service';
+import { User } from '../domain-models/User';
 
 @Component({
   selector: 'app-header',
@@ -11,21 +12,25 @@ import { ApiUsersService } from '../api-services/users/api-users.service';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
+  constructor(private apiUsersService: ApiUsersService) { }
   
-  constructor(private apiUsersService: ApiUsersService) {}
-  items = [
-    { label: "Содержание" },
-    { label: "Итоговый тест" }
-  ];
-  
+  items: MenuItem[] = [];
+  _currentUser: User | null = null;
+
   ngOnInit(): void {
-    const currentUser = this.apiUsersService.GetCurrentUser();
-    // TODO: решить вопрос с null и проверкой на логин
-    if (currentUser?.user_type !== 1) {
+    this._currentUser = this.apiUsersService.GetCurrentUser();
+
+    this.items = [
+      { label: "Главы", routerLink: "/chapters" },
+      { label: "Итоговый тест", routerLink: "/test" },
+      { label: "Вход", routerLink: "/login" }
+    ];
+
+    if (this._currentUser?.user_type !== 1) {
       this.items.push(
-        { label: "Управление тестами" }, 
-        { label: "Управление материалами" }, 
-        { label: "Результаты учеников" }
+        { label: "Управление тестами", routerLink: "/editor/test" },
+        { label: "Управление материалами", routerLink: "/editor/chapter" },
+        { label: "Результаты учеников", routerLink: "/results" }
       )
     }
   }

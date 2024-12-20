@@ -17,3 +17,13 @@
     font-display: swap;
     src: url("/assets/fonts/InterVariable-Italic.woff2") format("woff2");
 }
+
+p-menubar[name="header"] p-menubarsub {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+p-tabmenu ul {
+    justify-content: center !important;
+}

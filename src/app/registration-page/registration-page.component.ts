@@ -11,6 +11,7 @@ import { User } from '../domain-models/User';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { RouterOutlet } from '@angular/router';
 
 
 
@@ -21,7 +22,7 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     CheckboxModule, StyleClassModule,
     ButtonModule, InputTextModule, FormsModule,
     CommonModule, ReactiveFormsModule,
-    SelectButtonModule,
+    SelectButtonModule, RouterOutlet 
   ],
   templateUrl: './registration-page.component.html',
   styleUrl: './registration-page.component.scss',

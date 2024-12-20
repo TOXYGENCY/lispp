@@ -43,7 +43,7 @@ export class ApiUsersService {
   }
 
   // Observable, потому что это аналог Task - асинхронный контейнер метода, который можно ожидать
-  public GetAll(): Observable<any> {
+  public GetAllUsers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/users`);
   }
 

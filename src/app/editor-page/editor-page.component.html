@@ -1,0 +1,40 @@
+<app-header></app-header>
+
+<div class="surface-card p-4 shadow-2 border-round w-full lg:w-6 mx-auto justify-center items-center mt-6">
+    <h4 class="text-center text-pink-500"> {{ currentPath }}</h4>
+    <h2 class="text-center"> {{ pageTitle }}</h2>
+    <h3 class="text-center"> {{ pageSubTitle }}</h3>
+
+    <div class="mb-4">
+        <p-tabMenu class="mb-4" [model]="tabs" [activeItem]="activeTab">
+            <ng-template pTemplate="item" let-item>
+                <ng-container *ngIf="item.route; else elseBlock">
+                    <a [routerLink]="item.route" class="p-menuitem-link">
+                        <span [class]="item.icon"></span>
+                        <span class="ml-2">
+                            {{ item.label }}
+                        </span>
+                    </a>
+                </ng-container>
+                <ng-template #elseBlock>
+                    <a [href]="item.url" class="p-menuitem-link">
+                        <span [class]="item.icon"></span>
+                        <span class="ml-2">
+                            {{ item.label }}
+                        </span>
+                    </a>
+                </ng-template>
+            </ng-template>
+        </p-tabMenu>
+    </div>
+
+    <ng-container *ngIf="!isLoading; else loading">
+        <router-outlet></router-outlet>
+    </ng-container>
+
+    <ng-template #loading>
+        <p-progressSpinner ariaLabel="loading" />
+    </ng-template>
+
+
+</div>
