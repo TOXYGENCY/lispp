@@ -1,17 +1,20 @@
 <form (ngSubmit)="Submit()">
-    <div class="p-4 border-round w-full w-full mx-auto justify-center items-center">
+    <h2 class="text-center m-0">Главы</h2>
+    <div class="p-4 border-round w-full mx-auto justify-center items-center">
         <div class="card flex justify-content-center mb-4">
             <p-selectButton [options]="modes" [allowEmpty]="false" [(ngModel)]="mode" optionLabel="label" name="modes"
                 optionValue="mode" />
         </div>
 
-        <div *ngIf="!mode" class="flex justify-content-center mb-4">
-            <p-dropdown [options]="chapters" name="chapter" (onChange)="InsertTitle()" (onFocus)="LoadChapters()"
+        <div *ngIf="!mode" class="flex-column justify-content-center mb-4">
+            <label for="chapter" class="block text-900 font-medium mb-2">Глава<span
+                    class="text-red-500 text-sm">*</span></label>
+            <p-dropdown styleClass="w-full bg-primary-50" [options]="chapters" name="chapter" (onChange)="InsertTitle()" (onFocus)="LoadChapters()"
                 [(ngModel)]="selectedChapter" optionLabel="chapter" [filter]="true" filterBy="title" [showClear]="true"
                 placeholder="Выберите главу для редактирования" filterPlaceholder="Заголовок"
                 emptyFilterMessage="Не найдено">
                 <ng-template pTemplate="selectedItem" let-selectedOption>
-                    <div class="flex align-items-center gap-2">
+                    <div class="text-primary flex align-items-center gap-2">
                         <div>{{ selectedOption.title }}</div>
                     </div>
                 </ng-template>
@@ -21,24 +24,25 @@
                     </div>
                 </ng-template>
             </p-dropdown>
+            <hr class="mb-5 mt-4">
         </div>
 
         <div class="flex flex-column gap-2 mb-3" *ngFor="let field of inputFields">
             <label [for]="field.id">{{ field.title }}<span class="text-red-500">*</span></label>
-            <input pInputText (ngModelChange)="onInputChange()" [id]="field.id" [placeholder]="field.placeholder" [name]="field.id"
-                [(ngModel)]="inputValues[field.id]" />
+            <input pInputText (ngModelChange)="onInputChange()" [id]="field.id" [placeholder]="field.placeholder"
+                [name]="field.id" [(ngModel)]="inputValues[field.id]" />
         </div>
 
-        <div class="flex justify-content-center mt-3">
+        <div class="flex justify-content-center mt-4">
             <button [disabled]="disableSubmit" type="submit" pButton>
                 <span [class]="showLoading ? 'pi pi-spin pi-spinner mr-2' : ''"></span>
                 <span class="text-center">{{ showLoading ? " Отправляем..." : submitLabel }}</span>
             </button>
-            <button *ngIf="!mode" [disabled]="disableSubmit" (click)="DeleteChapter()" type="button" pButton class="p-button-danger ml-2">
+            <button *ngIf="!mode" [disabled]="disableSubmit" (click)="DeleteChapter()" type="button" pButton
+                class="p-button-danger ml-2">
                 <span [class]="showLoadingDelete ? 'pi pi-spin pi-spinner mr-2' : 'pi pi-trash mr-2'"></span>
                 <span class="text-center">{{ showLoadingDelete ? " Удаляем..." : "Удалить" }}</span>
             </button>
         </div>
     </div>
 </form>
-<p-toast position="bottom-right" />

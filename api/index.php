@@ -12,8 +12,10 @@ $database = new Database();
 // Подключаем необходимые файлы контроллеров
 require_once 'controllers/users-controller.php';
 require_once 'controllers/chapters-controller.php';
+require_once 'controllers/blocks-controller.php';
 $users_controller = new UsersController($database);
 $chapters_controller = new ChaptersController($database);
+$blocks_controller = new BlocksController($database);
 
 
 // Получаем текущий URL
@@ -93,6 +95,41 @@ if ($uriParts[0] === 'api' && $uriParts[1] === 'users') {
     case 'DELETE':
       if (isset($uriParts[2])) {
         $controller->DeleteChapter($uriParts[2]);
+      }
+      break;
+    default:
+      http_response_code(405); // Метод не разрешен
+      break;
+  }
+} elseif ($uriParts[0] === 'api' && $uriParts[1] === 'blocks') {
+  $controller = $blocks_controller;
+  switch ($requestMethod) {
+    case 'GET':
+      if (isset($uriParts[4])) {  // api/blocks/title/{title}
+        $controller->GetBlockByTitle($uriParts[4]);
+      } elseif (isset($uriParts[2])) {  // api/blocks/{id}
+        if (isset($uriParts[3]) && $uriParts[3] == "chapter") {
+          $controller->GetLinkedChapter($uriParts[2]);
+        } else {
+          $controller->GetBlockById($uriParts[2]);
+        }
+      } else {
+        $controller->GetAllBlocks();
+      }
+      break;
+    case 'POST':
+      $blockData = json_decode(file_get_contents('php://input'), true);
+      $controller->CreateBlock($blockData['Block'], $blockData['chapter_id']);
+      break;
+    case 'PUT':
+      if (isset($uriParts[2])) {
+        $blockData = json_decode(file_get_contents('php://input'), true);
+        $controller->UpdateBlock($blockData['Block'], $blockData['chapter_id']);
+      }
+      break;
+    case 'DELETE':
+      if (isset($uriParts[2])) {
+        $controller->DeleteBlock($uriParts[2]);
       }
       break;
     default:

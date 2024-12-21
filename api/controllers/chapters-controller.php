@@ -48,6 +48,7 @@ class ChaptersController
 
     public function DeleteChapter($id)
     {
+        $this->database->Execute("DELETE FROM chapter_blocks WHERE chapter_id = ?", [$id]);
         $this->database->Execute("DELETE FROM chapters WHERE id = ?", [$id]);
         $this->_json(['message' => "Удаление главы с ID: $id"]);
     }

@@ -6,7 +6,7 @@
     <h3 class="text-center"> {{ pageSubTitle }}</h3>
 
     <div class="mb-4">
-        <p-tabMenu class="mb-4" [model]="tabs" [activeItem]="activeTab">
+        <p-tabMenu class="mb-4" [model]="tabs" [activeItem]="{}">
             <ng-template pTemplate="item" let-item>
                 <ng-container *ngIf="item.route; else elseBlock">
                     <a [routerLink]="item.route" class="p-menuitem-link">
@@ -36,5 +36,5 @@
         <p-progressSpinner ariaLabel="loading" />
     </ng-template>
 
-
+<p-toast position="bottom-right" />
 </div>

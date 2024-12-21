@@ -4,7 +4,6 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 import { StyleClassModule } from 'primeng/styleclass';
 import { InputTextModule } from 'primeng/inputtext';
 import { Chapter } from '../domain-models/Chapter';
-import { CheckboxModule } from 'primeng/checkbox';
 import { Component, OnInit } from '@angular/core';
 import { DropdownModule } from 'primeng/dropdown';
 import { CommonModule } from '@angular/common';
@@ -18,13 +17,10 @@ import { finalize } from "rxjs";
   selector: 'app-chapter-editor',
   standalone: true,
   imports: [
-    CheckboxModule, StyleClassModule,
-    ButtonModule, InputTextModule, FormsModule,
-    CommonModule, ReactiveFormsModule,
-    SelectButtonModule, SelectButtonModule,
-    DropdownModule, ToastModule
+    StyleClassModule, InputTextModule, FormsModule,
+    CommonModule, SelectButtonModule,
+    DropdownModule, ToastModule, ButtonModule
   ],
-  providers: [MessageService],
   templateUrl: './chapter-editor.component.html',
   styleUrl: './chapter-editor.component.scss'
 })
