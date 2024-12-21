@@ -31,7 +31,6 @@ import { SelectButtonModule } from 'primeng/selectbutton';
 export class RegistrationPageComponent {
   constructor(private apiUsersService: ApiUsersService, private router: Router) { }
 
-
   showErrorHint: boolean = false;
   showLoading: boolean = false;
   isAuth: boolean = true;

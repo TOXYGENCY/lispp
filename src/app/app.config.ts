@@ -1,11 +1,12 @@
 import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http'
 import { provideRouter } from '@angular/router';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideHttpClient()]
+  providers: [provideRouter(routes), provideHttpClient(), provideAnimations()]
 };
 
 export const test_apiUrl: string = 'https://localhost:7150/api/v1';

@@ -11,7 +11,9 @@ $database = new Database();
 
 // Подключаем необходимые файлы контроллеров
 require_once 'controllers/users-controller.php';
+require_once 'controllers/chapters-controller.php';
 $users_controller = new UsersController($database);
+$chapters_controller = new ChaptersController($database);
 
 
 // Получаем текущий URL
@@ -66,6 +68,38 @@ if ($uriParts[0] === 'api' && $uriParts[1] === 'users') {
       http_response_code(405); // Метод не разрешен
       break;
   }
+} elseif ($uriParts[0] === 'api' && $uriParts[1] === 'chapters') {
+  $controller = $chapters_controller;
+  switch ($requestMethod) {
+    case 'GET':
+      if (isset($uriParts[4])) {  // api/chapters/title/{title}
+        $controller->GetChapterByTitle($uriParts[4]);
+      } elseif (isset($uriParts[2])) {  // api/chapters/{id}
+        $controller->GetChapterById($uriParts[2]);
+      } else {
+        $controller->GetAllChapters();
+      }
+      break;
+    case 'POST':
+      $titleData = json_decode(file_get_contents('php://input'), true);
+      $controller->CreateChapter($titleData['title']);
+      break;
+    case 'PUT':
+      if (isset($uriParts[2])) {
+        $titleData = json_decode(file_get_contents('php://input'), true);
+        $controller->UpdateChapter($titleData['title'], $uriParts[2]);
+      }
+      break;
+    case 'DELETE':
+      if (isset($uriParts[2])) {
+        $controller->DeleteChapter($uriParts[2]);
+      }
+      break;
+    default:
+      http_response_code(405); // Метод не разрешен
+      break;
+  }
 } else {
   http_response_code(404); // Не найдено
 }
+

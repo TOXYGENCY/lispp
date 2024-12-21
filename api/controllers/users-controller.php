@@ -3,7 +3,6 @@ require_once 'headers.php';
 
 class UsersController
 {
-    // private $db;
     private $database;
     public function __construct($database)
     {
