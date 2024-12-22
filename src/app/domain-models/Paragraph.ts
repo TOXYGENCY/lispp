@@ -1,8 +1,8 @@
 export interface Paragraph {
     id?: string | null;
-    paragraphTitle: string;
-    description?: string | null;
-    blockId?: string | null;
-    createdAt?: Date | null;
-    updatedAt?: Date | null;
+    title: string;
+    description_text: string;
+    description_special?: string | null;
+    created_at?: Date | null;
+    updated_at?: Date | null;
 }

@@ -4,6 +4,7 @@ import { ChaptersPageComponent } from './chapters-page/chapters-page.component';
 import { ChapterEditorComponent } from './chapter-editor/chapter-editor.component';
 import { EditorPageComponent } from './editor-page/editor-page.component';
 import { BlockEditorComponent } from './block-editor/block-editor.component';
+import { ParagraphEditorComponent } from './paragraph-editor/paragraph-editor.component';
 
 export const routes: Routes = [
     { path: '', component: RegistrationPageComponent },
@@ -16,7 +17,7 @@ export const routes: Routes = [
         children: [
             { path: 'chapter', component: ChapterEditorComponent },
             { path: 'block', component: BlockEditorComponent },
-            { path: 'paragraph', component: ChapterEditorComponent },
+            { path: 'paragraph', component: ParagraphEditorComponent },
             { path: 'test', component: ChapterEditorComponent, },
         ]
     },

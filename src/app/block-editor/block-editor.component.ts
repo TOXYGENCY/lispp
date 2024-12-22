@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { finalize } from 'rxjs';
 import { ApiBlocksService } from '../api-services/blocks/api-blocks.service';
@@ -26,16 +26,18 @@ import { ApiChaptersService } from '../api-services/chapters/api-chapters.servic
   templateUrl: './block-editor.component.html',
   styleUrl: './block-editor.component.scss'
 })
-export class BlockEditorComponent {
+export class BlockEditorComponent implements OnInit {
 
   constructor(private apiBlocksService: ApiBlocksService, private apiChaptersService: ApiChaptersService, private messageService: MessageService) { }
 
   selectedBlock: Block | null = null;
   blocks: Block[] = [];
   block: Block | undefined;
+  
   selectedChapter: Chapter | null = null;
   chapters: Chapter[] = [];
   chapter: Chapter | undefined;
+
   inputFields: any[] = [];
   inputValues: any = {
     blockTitle: ''

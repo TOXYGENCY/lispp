@@ -6,7 +6,7 @@ export interface User {
     user_type: number;
     organization_code?: string | null;
     organization_id?: string | null;
-    createdAt?: Date | null;
-    updatedAt?: Date | null;
+    created_at?: Date | null;
+    updated_at?: Date | null;
 }
 

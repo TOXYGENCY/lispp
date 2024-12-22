@@ -49,14 +49,14 @@ CREATE TABLE users_organizations (
 -- Главы блоков
 CREATE TABLE chapters (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  title VARCHAR NOT NULL,
+  title VARCHAR UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Блоки тем
 CREATE TABLE blocks (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  title VARCHAR NOT NULL,
+  title VARCHAR UNIQUE NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -71,8 +71,9 @@ CREATE TABLE chapter_blocks (
 -- Параграфы в блоках
 CREATE TABLE paragraphs (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  title VARCHAR NOT NULL,
-  description VARCHAR,
+  title VARCHAR UNIQUE NOT NULL,
+  description_text VARCHAR NOT NULL,
+  description_special VARCHAR,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
@@ -88,12 +89,12 @@ CREATE TABLE paragraph_blocks (
 -- Тесты
 CREATE TABLE tests (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  title VARCHAR NOT NULL,
+  title VARCHAR UNIQUE  NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Связь тестов и глав
+-- Связь тестов и блоков
 CREATE TABLE test_blocks (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
   test_id UUID NOT NULL REFERENCES tests(id),
@@ -101,18 +102,17 @@ CREATE TABLE test_blocks (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
--- Связь вопросов и тестов
+-- Вопросы тестов
 CREATE TABLE questions (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  test_id UUID NOT NULL REFERENCES tests(id),
-  question VARCHAR NOT NULL,
+  text VARCHAR UNIQUE  NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Варианты ответов к вопросам 
 CREATE TABLE answers (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  answer VARCHAR NOT NULL,
+  text VARCHAR UNIQUE  NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

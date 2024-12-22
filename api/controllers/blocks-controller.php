@@ -55,8 +55,10 @@ class BlocksController
     {
         $this->database->Execute("UPDATE blocks SET title = ? WHERE id = ?", [$Block['title'], $Block['id']]);
         // Обновляем связь
-        // $chapter_block = $this->database->Execute("SELECT id FROM chapter_blocks WHERE block_id = ?", [$Block['id']])->fetch(PDO::FETCH_ASSOC);
-        $this->database->Execute("UPDATE chapter_blocks SET chapter_id = ? WHERE block_id = ?", [$chapter_id, $Block['id']]);
+        $this->database->Execute("DELETE FROM chapter_blocks WHERE block_id = ?", [$Block['id']]);
+        $this->database->Execute("INSERT INTO chapter_blocks (block_id, chapter_id) VALUES (?, ?)", [$Block['id'], $chapter_id]);
+        
+        // $this->database->Execute("UPDATE chapter_blocks SET chapter_id = ? WHERE block_id = ?", [$chapter_id, $Block['id']]);
 
         $this->_json(['message' => "Обновление блока с ID: {$Block['id']}"]);
     }

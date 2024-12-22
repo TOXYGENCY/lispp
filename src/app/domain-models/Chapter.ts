@@ -1,5 +1,5 @@
 export interface Chapter {
     id?: string | null;
     title: string;
-    createdAt?: Date | null;
+    created_at?: Date | null;
 }

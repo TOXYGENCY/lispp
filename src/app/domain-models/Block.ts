@@ -1,5 +1,5 @@
 export interface Block {
     id?: string | null;
     title: string;
-    createdAt?: Date | null;
+    created_at?: Date | null;
 }
