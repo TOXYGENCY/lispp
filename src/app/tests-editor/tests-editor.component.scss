@@ -1,0 +1,23 @@
+/* Стили для радио-кнопки с кастомным видом */
+.custom-radio-btn .p-radiobutton {
+    background-color: #f0f4f8;
+    border: 2px solid #4caf50;
+    color: #4caf50;
+    border-radius: 12px;
+    padding: 8px;
+    border-color:rgba(0, 0, 0, 0.1);
+}
+
+/* Наведение */
+.custom-radio-btn .p-radiobutton:hover {
+    background-color: #80e27e;
+    color: white;
+    border-color: #388e3c;
+}
+
+/* Когда радио-кнопка выбрана */
+.custom-radio-btn .p-radiobutton.p-radiobutton-checked {
+    background-color: #388e3c;
+    color: white;
+    border-color: #388e3c;
+}

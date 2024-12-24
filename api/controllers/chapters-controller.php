@@ -14,17 +14,28 @@ class ChaptersController
         echo json_encode($content, JSON_UNESCAPED_UNICODE, JSON_UNESCAPED_SLASHES);
     }
 
-    
+
     public function CreateChapter($title)
     {
         $this->database->Execute("INSERT INTO chapters (title) VALUES (?)", [$title]);
         $this->_json(['message' => "Добавлена глава: $title"]);
     }
 
-    public function GetAllChapters()
+    public function GetAllChapters($return = false)
     {
-        $chapters = $this->database->Execute("SELECT * FROM chapters")->fetchAll(PDO::FETCH_ASSOC);
-        $this->_json($chapters);
+        if ($return) {
+            return $this->database->Execute("SELECT * FROM chapters")->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $chapters = $this->database->Execute("SELECT * FROM chapters")->fetchAll(PDO::FETCH_ASSOC);
+            $this->_json($chapters);
+        }
+    }
+
+    public function GetBlocksByChapterId($id)
+    {
+        $q = "SELECT blocks.* FROM blocks INNER JOIN chapter_blocks ON chapter_blocks.block_id = blocks.id WHERE chapter_blocks.chapter_id = ?";
+        $blocks = $this->database->Execute($q, [$id])->fetchAll(PDO::FETCH_ASSOC);
+        $this->_json($blocks);
     }
 
     public function GetChapterById($id)

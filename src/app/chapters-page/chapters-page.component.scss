@@ -1,0 +1,27 @@
+.container {
+    width: 75%;
+}
+
+.test-wrapper {
+    min-width: 30rem;
+}
+
+
+div[name="answers"] {
+    font-size: 1.1rem;
+}
+
+.correct {
+    color: #23bb61;
+    font-weight: bold;
+}
+
+.incorrect {
+    color: red;
+    font-weight: bold;
+}
+
+.locked {
+    cursor: not-allowed;
+    opacity: 0.9;
+}

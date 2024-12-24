@@ -105,14 +105,14 @@ CREATE TABLE test_blocks (
 -- Вопросы тестов
 CREATE TABLE questions (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  text VARCHAR UNIQUE  NOT NULL,
+  text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 -- Варианты ответов к вопросам 
 CREATE TABLE answers (
   id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
-  text VARCHAR UNIQUE  NOT NULL,
+  text VARCHAR NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -125,6 +125,13 @@ CREATE TABLE questions_answers (
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+--Cвязь вопросов и тестов
+CREATE TABLE questions_tests (
+  id UUID PRIMARY KEY NOT NULL DEFAULT gen_random_uuid(),
+  question_id UUID NOT NULL REFERENCES questions(id),
+  test_id UUID NOT NULL REFERENCES tests(id),
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
 
 -- Ответы пользователя
 CREATE TABLE user_answers (

@@ -1,7 +1,7 @@
-// Вопросы тестов
+import { Answer } from "./Answer";
+
 export interface Question {
     id?: string | null;
     text: string;
-    created_at?: Date | null;
+    answers: Answer[];  // Ответы к вопросу
 }
-

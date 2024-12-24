@@ -3,6 +3,7 @@ import { Chapter } from '../../domain-models/Chapter';
 import { Observable, tap } from 'rxjs';
 import { apiUrl, test_apiUrl } from '../../app.config';
 import { HttpClient } from '@angular/common/http';
+import { Block } from '../../domain-models/Block';
 
 @Injectable({ providedIn: 'root' })
 export class ApiChaptersService {
@@ -25,5 +26,9 @@ export class ApiChaptersService {
 
   public DeleteChapter(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/chapters/${id}`);
+  }
+
+  public GetBlocksByChapterId(chapter_id: string): Observable<Block[]> {
+    return this.http.get<Block[]>(`${this.apiUrl}/chapters/${chapter_id}/blocks`);
   }
 }

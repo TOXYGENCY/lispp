@@ -116,8 +116,13 @@ export class ParagraphEditorComponent implements OnInit {
   }
 
   onInputChange() {
-    this.paragraphDescriptionSpecial = this.inputValues['paragraphDescriptionContent'];
-    this.paragraphDescriptionText = this._GetTextFromHtml(this.paragraphDescriptionSpecial);
+    setTimeout(() => {
+      const nbsp = String.fromCharCode(160);
+      this.paragraphDescriptionSpecial = this.inputValues['paragraphDescriptionContent'].replace(/&nbsp;/g, ' ');
+      this.paragraphDescriptionText = this._GetTextFromHtml(this.paragraphDescriptionSpecial);
+      console.log(this.paragraphDescriptionSpecial);
+    }, 100);
+    
   }
 
   private _GetTextFromHtml(html: string): string {

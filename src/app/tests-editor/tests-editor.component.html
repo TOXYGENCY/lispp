@@ -1,36 +1,99 @@
 <form (ngSubmit)="Submit()">
     <h2 class="text-center m-0">Тесты</h2>
-    <div class="p-4 border-round w-full w-full mx-auto justify-center items-center">
+    <div class="p-4 border-round w-full mx-auto justify-center items-center">
         <div class="card flex justify-content-center mb-4">
             <p-selectButton [options]="modes" [allowEmpty]="false" [(ngModel)]="mode" optionLabel="label" name="modes"
                 optionValue="mode" />
         </div>
-    </div>
+        <div *ngIf="!mode" class="flex-column justify-content-center mb-4">
+            <label for="block" class="block text-900 font-medium mb-2">Тест<span
+                    class="text-red-500 text-sm">*</span></label>
+            <p-dropdown styleClass="w-full bg-primary-50" [options]="tests" name="test" (onChange)="SetTest()"
+                (onFocus)="LoadTests()" [(ngModel)]="selectedTest" optionLabel="test" [filter]="true" filterBy="title"
+                [showClear]="true" placeholder="Выберите тест для редактирования" filterPlaceholder="Заголовок"
+                emptyFilterMessage="Не найдено">
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                    <div class="text-primary flex align-items-center gap-2">
+                        <div>{{ selectedOption.title }}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-test pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                        <div>{{ test.title }}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <hr class="mb-5 mt-4">
+        </div>
 
-    <div *ngIf="!mode" class="flex-column justify-content-center mb-4">
-        <label for="block" class="block text-900 font-medium mb-2">Тест<span
+        <label for="chapter" class="block text-900 font-medium mb-2">Блок<span
                 class="text-red-500 text-sm">*</span></label>
-        <p-dropdown styleClass="w-full bg-primary-50" [options]="tests" name="test" (onChange)="SetTest()"
-            (onFocus)="LoadTests()" [(ngModel)]="selectedTest" optionLabel="test" [filter]="true"
-            filterBy="title" [showClear]="true" placeholder="Выберите тест для редактирования"
-            filterPlaceholder="Заголовок" emptyFilterMessage="Не найдено">
+        <p-dropdown styleClass="w-full bg-primary-50 gap-2 mb-3" [options]="blocks" name="block"
+            (onFocus)="LoadBlocks()" [(ngModel)]="selectedBlock" optionLabel="block" [filter]="true" filterBy="title"
+            [showClear]="true" placeholder="Выберите блок для прикрепления" filterPlaceholder="Заголовок"
+            emptyFilterMessage="Не найдено">
             <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="text-primary flex align-items-center gap-2">
                     <div>{{ selectedOption.title }}</div>
                 </div>
             </ng-template>
-            <ng-template let-test pTemplate="item">
+            <ng-template let-block pTemplate="item">
                 <div class="flex align-items-center gap-2">
-                    <div>{{ test.title }}</div>
+                    <div>{{ block.title }}</div>
                 </div>
             </ng-template>
         </p-dropdown>
-        <hr class="mb-5 mt-4">
-    </div>
+        <div class="flex justify-content-center mt-4">
+            <button *ngIf="!mode" [disabled]="disableSubmit" (click)="DeleteTest()" type="button" pButton
+                class="p-button-danger ml-2">
+                <span [class]="showLoadingDelete ? 'pi pi-spin pi-spinner mr-2' : 'pi pi-trash mr-2'"></span>
+                <span class="text-center">{{ showLoadingDelete ? " Удаляем..." : "Удалить" }}</span>
+            </button>
+        </div>
 
-    <div class="flex flex-column gap-2 mb-3" *ngFor="let field of inputFields">
-        <label [for]="field.name">{{ field.title }}<span class="text-red-500">*</span></label>
-        <input pInputText (ngModelChange)="onInputChange()" [placeholder]="field.placeholder"
-            [name]="field.name" [(ngModel)]="inputValues[field.name]" />
+        <div class="flex flex-column gap-2" *ngFor="let field of inputFields">
+            <label>{{ field.title }}<span class="text-red-500">*</span></label>
+            <input pInputText [(ngModel)]="inputValues[field.id]" [placeholder]="field.placeholder" name="testTitle" />
+        </div>
+
+        <!-- Добавление вопросов -->
+        <div class="flex flex-column gap-2 p-4 my-5 border-round shadow-4 bg-bluegray-50 max-w-30rem mx-auto"
+            *ngFor="let question of questions; let i = index; trackBy: TrackByIndex">
+            <h3 class="mt-1">Вопрос {{ i + 1 }}</h3>
+            <label for="questionText">Текст вопроса</label>
+            <!-- Используем p-inputTextarea для многострочного ввода вопроса с программами -->
+            <textarea [(ngModel)]="question.text" [name]="'questionText_' + question.id" rows="10" autoResize="true"
+                style="resize: vertical;" placeholder="Введите текст вопроса"></textarea>
+
+            <label for="answers">Ответы</label>
+            <div name="answers">
+                <div class="my-2" *ngFor="let answer of question.answers; let j = index">
+                    <p-inputGroup>
+                        <input pInputText [(ngModel)]="answer.text" [placeholder]="'Вариант ответа ' + (j + 1)"
+                            [name]="'answerText_' + question.id + '_' + j" />
+                        <!-- Кнопка, которая будет вести себя как радио-кнопка -->
+                        <button type="button" pButton icon="pi pi-check" (click)="MarkCorrectAnswer(i, j)"
+                            [class]="answer.isCorrect ? 'p-button-success' : 'p-button-text border-black-alpha-10 hover:text-green-500 hover:bg-green-50'">
+                        </button>
+                    </p-inputGroup>
+                </div>
+            </div>
+
+            <button type="button" pButton class="p-button-danger p-1 my-2 flex justify-content-center"
+                (click)="DeleteQuestion(i)">
+                Удалить вопрос
+            </button>
+        </div>
+
+        <button type="button" pButton icon="pi pi-plus mx-1" class="p-button p-1 my-2 flex justify-content-center"
+            (click)="AddQuestion()">Добавить вопрос</button>
+
+        <div class="flex justify-content-center mt-4">
+            <button [disabled]="disableSubmit" type="submit" pButton>
+                <span [class]="showLoading ? 'pi pi-spin pi-spinner mr-2' : ''"></span>
+                <span class="text-center">{{ showLoading ? " Отправляем..." : submitLabel }}</span>
+            </button>
+
+        </div>
     </div>
 </form><p-toast position="bottom-right" />

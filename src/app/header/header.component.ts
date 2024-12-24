@@ -21,17 +21,17 @@ export class HeaderComponent implements OnInit {
     this._currentUser = this.apiUsersService.GetCurrentUser();
 
     this.items = [
-      { label: "Главы", routerLink: "/chapters" },
-      { label: "Итоговый тест", routerLink: "/test" },
-      { label: "Вход", routerLink: "/login" }
+      { label: "Курс обучения", routerLink: "/chapters" },
     ];
 
     if (this._currentUser?.user_type !== 1) {
       this.items.push(
-        { label: "Управление тестами", routerLink: "/editor/test" },
         { label: "Управление материалами", routerLink: "/editor/chapter" },
-        { label: "Результаты учеников", routerLink: "/results" }
+        { label: "Управление тестами", routerLink: "/editor/test" }
       )
     }
+    this.items.push(
+      { label: "Выход", routerLink: "/login" }
+    );
   }
 }

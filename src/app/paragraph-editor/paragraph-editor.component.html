@@ -33,7 +33,7 @@
                 [name]="field.id" [(ngModel)]="inputValues[field.id]" />
         </div>
 
-        <p-editor [(ngModel)]="inputValues['paragraphDescriptionContent']" (onTextChange)="onInputChange()" [style]="{ height: '320px' }" styleClass="mb-3" name="paragraphDescription" />
+        <p-editor [(ngModel)]="inputValues['paragraphDescriptionContent']" (ngModelChange)="onInputChange()" [style]="{ height: '320px' }" styleClass="mb-3" name="paragraphDescription" />
 
         <label for="block" class="block text-900 font-medium mb-2">Блок<span
                 class="text-red-500 text-sm">*</span></label>

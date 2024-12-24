@@ -1,2 +1,63 @@
 <app-header></app-header>
-<p>chapters-page works!</p>
+<div class="flex justify-content-center">
+    <div class="container border-1 border-round border-bluegray-500 ">
+        <p-accordion multiple="true">
+            <p-accordionTab *ngFor="let chapter of chapters" tabStyleClass="border-1 bg-bluegray-100"
+                [headerStyle]="{'font-style': 'italic', 'font-size': '1.25rem'}" [header]="chapter.title">
+                <p-accordion multiple="true">
+                    <p-accordionTab *ngFor="let block of chapter.blocks"
+                        [headerStyle]="{'font-weight': 'bold', 'font-size': '1.2rem'}" [header]="block.title">
+                        <p-panel styleClass="mb-5" *ngFor="let paragraph of block.paragraphs">
+                            <p-header class="text-primary-600 font-semibold">{{ paragraph.title }}.</p-header>
+                            <div [innerHTML]="paragraph.description_special"></div>
+                            <!-- <p class="line-height-3">{{ paragraph.description_special }}</p> -->
+                        </p-panel>
+
+                        <div class="test-wrapper flex-column justify-content-center">
+                            <div class="flex-column justify-content-center max-w-30rem m-auto">
+                                <p-panel styleClass="mb-5" *ngFor="let test of block.tests">
+                                    <form (ngSubmit)="Submit(test.id!)" [id]="'test_' + test.id">
+                                        <p-header class="text-primary-600 font-semibold font-italic">{{ test.title }}.</p-header>
+                                    
+                                        <div *ngFor="let question of test.questions; let i = index;">
+                                    
+                                            <div class="question flex flex-column gap-2 p-4 my-5 border-round shadow-4 bg-bluegray-50" id="question_{{question.id}}">
+                                                <h3 class="mt-1">Вопрос {{ i + 1 }}.</h3>
+                                                <textarea class="mb-2 p-2" [name]="'questionText_' + question.id" rows="10" autoResize="true"
+                                                    style="resize: vertical;" placeholder="Введите текст вопроса" readonly>{{ question.text }}</textarea>
+                                    
+                                                <label for="answers">Ответы:</label>
+                                                <div class="my-1" name="answers">
+                                                    <div class="answer mb-2" *ngFor="let answer of question.answers; let j = index"
+                                                        [attr.data-answer-id]="answer.id">
+                                    
+                                                        <div class="flex align-items-center gap-2">
+                                                            <!-- Радио-кнопка с привязкой disabled -->
+                                                            <p-radioButton [styleClass]="'font-2x1'" name="answerGroup_{{question.id}}" [value]="answer"
+                                                                [(ngModel)]="selectedAnswers[question.id!]" inputId="answer_{{question.id}}_{{j}}"
+                                                                [disabled]="lockedTests[test.id!]">
+                                                            </p-radioButton>
+                                                            <label for="answer_{{question.id}}_{{j}}" class="flex align-items-center cursor-pointer">
+                                                                <span>{{ answer.text }}</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="flex justify-content-center mt-4">
+                                            <button type="button" pButton class="p-button my-2" [name]="test.id" type="submit"
+                                                [disabled]="lockedTests[test.id!]">{{submitLabel}}</button>
+                                        </div>
+                                    </form>
+                                </p-panel>
+                            </div>
+                        </div>
+                    </p-accordionTab>
+                </p-accordion>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+</div>
+<p-toast position="bottom-right" />

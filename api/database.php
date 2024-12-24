@@ -15,7 +15,9 @@ class Database
     // Метод для подключения к базе данных
     public function GetConnection()
     {
-        $this->conn = null;
+        if ($this->conn != null) {
+            return $this->conn;
+        }
 
         try {
             $this->conn = new PDO("pgsql:host={$this->host};port=5432;dbname={$this->db_name};options='--client_encoding=UTF8'", $this->username, $this->password);
