@@ -5,6 +5,7 @@ import { ChapterEditorComponent } from './chapter-editor/chapter-editor.componen
 import { EditorPageComponent } from './editor-page/editor-page.component';
 import { BlockEditorComponent } from './block-editor/block-editor.component';
 import { ParagraphEditorComponent } from './paragraph-editor/paragraph-editor.component';
+import { TestsEditorComponent } from './tests-editor/tests-editor.component';
 
 export const routes: Routes = [
     { path: '', component: RegistrationPageComponent },
@@ -18,7 +19,7 @@ export const routes: Routes = [
             { path: 'chapter', component: ChapterEditorComponent },
             { path: 'block', component: BlockEditorComponent },
             { path: 'paragraph', component: ParagraphEditorComponent },
-            { path: 'test', component: ChapterEditorComponent, },
+            { path: 'test', component: TestsEditorComponent, },
         ]
     },
     { path: 'chapters', component: ChaptersPageComponent }, // Страница глав
