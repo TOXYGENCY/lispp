@@ -137,6 +137,7 @@ export class ParagraphEditorComponent implements OnInit {
     if (this.selectedParagraph) {
       this.inputValues['paragraphTitle'] = this.selectedParagraph.title; // Обновляем значение поля ввода при выборе параграфа
       this.inputValues['paragraphDescriptionContent'] = this.selectedParagraph.description_special; // Обновляем значение поля ввода при выборе параграфа
+      this.onInputChange();
       this.apiParagraphsService.GetLinkedBlock(this.selectedParagraph.id!).subscribe(
         (response: any) => {
 
