@@ -21,7 +21,7 @@ class AnswersController
     
     public function GetAllAnswers()
     {
-        $answers = $this->database->Execute("SELECT * FROM answers")->fetchAll(PDO::FETCH_ASSOC);
+        $answers = $this->database->Execute("SELECT * FROM answers ORDER BY created_at ASC")->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($answers);
     }
 

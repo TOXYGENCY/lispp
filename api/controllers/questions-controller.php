@@ -15,7 +15,7 @@ class QuestionsController
 
     public function GetAllQuestions()
     {
-        $questions = $this->database->Execute("SELECT * FROM questions")->fetchAll(PDO::FETCH_ASSOC);
+        $questions = $this->database->Execute("SELECT * FROM questions ORDER BY created_at ASC")->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($questions);
     }
 
@@ -27,7 +27,7 @@ class QuestionsController
 
     public function GetAnswersByQuestionId($id)
     {
-        $query = "SELECT answers.* FROM answers INNER JOIN questions_answers ON questions_answers.answer_id = answers.id WHERE questions_answers.question_id = ?";
+        $query = "SELECT answers.* FROM answers INNER JOIN questions_answers ON questions_answers.answer_id = answers.id WHERE questions_answers.question_id = ? ORDER BY created_at ASC";
         $answers = $this->database->Execute($query, [$id])->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($answers);
     }

@@ -28,10 +28,10 @@ class BlocksController
 
     public function GetAllBlocks($return = false)
     {
+        $blocks = $this->database->Execute("SELECT * FROM blocks ORDER BY created_at ASC;")->fetchAll(PDO::FETCH_ASSOC);
         if ($return) {
-            return $this->database->Execute("SELECT * FROM blocks")->fetchAll(PDO::FETCH_ASSOC);
+            return $blocks;
         } else {
-            $blocks = $this->database->Execute("SELECT * FROM blocks")->fetchAll(PDO::FETCH_ASSOC);
             $this->_json($blocks);
         }
     }
@@ -45,14 +45,14 @@ class BlocksController
 
     public function GetParagraphsByBlockId($block_id)
     {
-        $q = "SELECT paragraphs.* FROM paragraphs INNER JOIN paragraph_blocks ON paragraph_blocks.paragraph_id = paragraphs.id WHERE paragraph_blocks.block_id = ?";
+        $q = "SELECT paragraphs.* FROM paragraphs INNER JOIN paragraph_blocks ON paragraph_blocks.paragraph_id = paragraphs.id WHERE paragraph_blocks.block_id = ? ORDER BY created_at ASC;";
         $paragraph_blocks = $this->database->Execute($q, [$block_id])->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($paragraph_blocks);
     }
 
     public function GetTestsByBlockId($block_id)
     {
-        $q = "SELECT tests.* FROM tests INNER JOIN test_blocks ON test_blocks.test_id = tests.id WHERE test_blocks.block_id = ?";
+        $q = "SELECT tests.* FROM tests INNER JOIN test_blocks ON test_blocks.test_id = tests.id WHERE test_blocks.block_id = ?  ORDER BY created_at ASC;";
         $test_blocks = $this->database->Execute($q, [$block_id])->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($test_blocks);
     }

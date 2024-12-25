@@ -92,7 +92,7 @@ class UsersController
 
     public function GetAllUsers()
     {
-        $users = $this->database->Execute("SELECT * FROM users")->fetchAll(PDO::FETCH_ASSOC);
+        $users = $this->database->Execute("SELECT * FROM users ORDER BY created_at ASC")->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($users);
     }
 

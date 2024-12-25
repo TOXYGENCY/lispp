@@ -27,7 +27,7 @@ class ParagraphsController
 
     public function GetAllParagraphs()
     {
-        $paragraphs = $this->database->Execute("SELECT * FROM paragraphs")->fetchAll(PDO::FETCH_ASSOC);
+        $paragraphs = $this->database->Execute("SELECT * FROM paragraphs ORDER BY created_at ASC;")->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($paragraphs);
     }
 

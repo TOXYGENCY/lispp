@@ -23,17 +23,17 @@ class ChaptersController
 
     public function GetAllChapters($return = false)
     {
+        $chapters = $this->database->Execute("SELECT * FROM chapters ORDER BY created_at ASC")->fetchAll(PDO::FETCH_ASSOC);
         if ($return) {
-            return $this->database->Execute("SELECT * FROM chapters")->fetchAll(PDO::FETCH_ASSOC);
+            return $chapters;
         } else {
-            $chapters = $this->database->Execute("SELECT * FROM chapters")->fetchAll(PDO::FETCH_ASSOC);
             $this->_json($chapters);
         }
     }
 
     public function GetBlocksByChapterId($id)
     {
-        $q = "SELECT blocks.* FROM blocks INNER JOIN chapter_blocks ON chapter_blocks.block_id = blocks.id WHERE chapter_blocks.chapter_id = ?";
+        $q = "SELECT blocks.* FROM blocks INNER JOIN chapter_blocks ON chapter_blocks.block_id = blocks.id WHERE chapter_blocks.chapter_id = ? ORDER BY created_at ASC";
         $blocks = $this->database->Execute($q, [$id])->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($blocks);
     }

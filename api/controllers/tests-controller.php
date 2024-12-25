@@ -70,7 +70,11 @@ class TestsController
 
     public function GetQuestionsByTestId($id)
     {
-        $query = "SELECT questions.* FROM questions INNER JOIN questions_tests ON questions_tests.question_id = questions.id WHERE questions_tests.test_id = ?";
+        $query = "SELECT questions.* 
+          FROM questions 
+          INNER JOIN questions_tests ON questions_tests.question_id = questions.id 
+          WHERE questions_tests.test_id = ? 
+          ORDER BY questions.created_at ASC";
         $questions = $this->database->Execute($query, [$id])->fetchAll(PDO::FETCH_ASSOC);
         $this->_json($questions);
     }
@@ -121,8 +125,8 @@ class TestsController
         $this->_json($block);
     }
 
-    
-    
+
+
     public function GetAllTests()
     {
         $tests = $this->database->Execute("SELECT * FROM tests")->fetchAll(PDO::FETCH_ASSOC);
@@ -152,7 +156,7 @@ class TestsController
 
         // Удаляем сам тест
         $this->database->Execute("DELETE FROM tests WHERE id = ?", [$id]);
-        
+
     }
     public function DeleteTestById($id)
     {
